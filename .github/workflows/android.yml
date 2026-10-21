@@ -1,0 +1,95 @@
+name: Build & Release
+
+on:
+  # Każdy merge do main = nowe wydanie; pull request = sama kompilacja i testy.
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_B64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Wersja z pliku VERSION. Gdy wydanie o tym numerze już istnieje (kolejny commit bez
+      # podbicia wersji), dostaje przyrostek z numerem budowania – każdy commit to nowe wydanie.
+      - name: Wersja
+        id: ver
+        run: |
+          BASE=$(tr -d '[:space:]' < VERSION)
+          NAME="$BASE"
+          if git rev-parse -q --verify "refs/tags/v$BASE" >/dev/null; then
+            NAME="$BASE.${{ github.run_number }}"
+          fi
+          echo "base=$BASE" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "code=$(( ${{ github.run_number }} + 100 ))" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+
+      - name: Klucz podpisu
+        if: env.KEYSTORE_B64 != ''
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.p12"
+          echo "SIGNING_KEYSTORE_PATH=$RUNNER_TEMP/release.p12" >> "$GITHUB_ENV"
+
+      - name: Testy jednostkowe
+        run: gradle testDebugUnitTest --stacktrace
+
+      - name: Budowanie APK
+        env:
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          # Opcjonalne: logowanie przez Google / Microsoft (OAuth). Bez nich działa logowanie hasłem.
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
+        run: gradle :app:assembleRelease -PversionCode=${{ steps.ver.outputs.code }} -PversionName=${{ steps.ver.outputs.name }} --stacktrace
+
+      - name: Przygotowanie pliku
+        run: cp app/build/outputs/apk/release/app-release.apk "OpenMail-${{ steps.ver.outputs.name }}.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenMail-${{ steps.ver.outputs.name }}
+          path: OpenMail-${{ steps.ver.outputs.name }}.apk
+
+      - name: Publikacja wydania
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.ver.outputs.name }}
+          BASE: ${{ steps.ver.outputs.base }}
+        run: |
+          TAG="v$NAME"
+          NOTES=$(awk -v version="$BASE" '$0 == "## " version { found=1; next } found && /^## / { exit } found { print }' CHANGELOG.md)
+          if [ "$NAME" != "$BASE" ]; then
+            LOG=$(git log -5 --pretty='- %s' "$GITHUB_SHA")
+            NOTES=$(printf 'Poprawki i ulepszenia:\n\n%s' "$LOG")
+          fi
+          FOOTER=$(printf -- '---\n**Android:** pobierz **OpenMail-%s.apk** i zainstaluj go na telefonie (Android 10+). Kolejne wersje aplikacja pobierze i zainstaluje sama.' "$NAME")
+          gh release create "$TAG" "OpenMail-$NAME.apk" \
+            --target "$GITHUB_SHA" \
+            --title "OpenMail $NAME" \
+            --notes "$(printf '%s\n\n%s' "$NOTES" "$FOOTER")" \
+            --latest
