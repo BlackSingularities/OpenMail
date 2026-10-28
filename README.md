@@ -63,7 +63,7 @@ Identyfikatory można też wpisać w aplikacji: Ustawienia → Zaawansowane.
 
 ## Budowanie
 
-Każdy merge do `main` buduje podpisany APK w GitHub Actions i publikuje wydanie. Pull requesty są tylko kompilowane i testowane.
+Każdy wypchnięty tag `vX.Y.Z` buduje podpisany APK w GitHub Actions i publikuje wydanie. Pull requesty są tylko kompilowane i testowane.
 Wersja pochodzi z pliku `VERSION`, opis wydania z `CHANGELOG.md`.
 
 ```bash

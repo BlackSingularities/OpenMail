@@ -1,11 +1,9 @@
 name: Build & Release
 
+# Budowanie i wydanie wyłącznie po wypchnięciu tagu wersji (np. v1.2.3).
 on:
-  # Każdy merge do main = nowe wydanie; pull request = sama kompilacja i testy.
   push:
-    branches: [ main ]
-  pull_request:
-  workflow_dispatch:
+    tags: ['v*']
 
 permissions:
   contents: write
@@ -24,16 +22,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Wersja z pliku VERSION. Gdy wydanie o tym numerze już istnieje (kolejny commit bez
-      # podbicia wersji), dostaje przyrostek z numerem budowania – każdy commit to nowe wydanie.
       - name: Wersja
         id: ver
         run: |
-          BASE=$(tr -d '[:space:]' < VERSION)
+          BASE="${GITHUB_REF_NAME#v}"
           NAME="$BASE"
-          if git rev-parse -q --verify "refs/tags/v$BASE" >/dev/null; then
-            NAME="$BASE.${{ github.run_number }}"
-          fi
           echo "base=$BASE" >> "$GITHUB_OUTPUT"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           echo "code=$(( ${{ github.run_number }} + 100 ))" >> "$GITHUB_OUTPUT"
@@ -75,7 +68,6 @@ jobs:
           path: OpenMail-${{ steps.ver.outputs.name }}.apk
 
       - name: Publikacja wydania
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           NAME: ${{ steps.ver.outputs.name }}

@@ -18,7 +18,8 @@ import androidx.compose.material.icons.automirrored.rounded.Notes
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.automirrored.rounded.ViewList
 import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.LocalCafe
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material.icons.rounded.DensityMedium
@@ -162,11 +163,11 @@ fun SettingsScreen() {
         }
 
         Group("Informacje") {
-            ActionRow(Icons.Rounded.Code, "Kod źródłowy", "github.com/${BuildConfig.UPDATE_REPO}") {
-                runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/${BuildConfig.UPDATE_REPO}"))) }
+            ActionRow(Icons.Rounded.Person, "Pomysł i wykonanie", "Adam Rędzikowski · redzikowski.com") {
+                runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://redzikowski.com"))) }
             }
-            ActionRow(Icons.Rounded.Warning, "Zgłoś problem", "Otwiera zgłoszenia na GitHubie") {
-                runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/${BuildConfig.UPDATE_REPO}/issues/new"))) }
+            ActionRow(Icons.Rounded.LocalCafe, "Postaw kawę", "Wesprzyj rozwój na buycoffee.to") {
+                runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://buycoffee.to/adamredzikowski"))) }
             }
             ActionRow(Icons.Rounded.Info, "Licencja", "MIT · Jakarta Mail (EPL 2.0) · jsoup (MIT)") {}
             ActionRow(Icons.AutoMirrored.Rounded.ViewList, "Wersja", BuildConfig.VERSION_NAME) {}
