@@ -86,7 +86,7 @@ fun parseRelease(json: String): ReleaseInfo {
  */
 object UpdateManager {
     const val ACTION_STATUS = "com.blacksingularities.openmail.UPDATE_STATUS"
-    private const val API = "https://api.github.com/repos/${BuildConfig.UPDATE_REPO}/releases/latest"
+    private const val API = "https://redzikowski.com/api/github/repos/${BuildConfig.UPDATE_REPO}/releases/latest"
 
     var state by mutableStateOf<UpdateState>(UpdateState.Idle)
         private set
