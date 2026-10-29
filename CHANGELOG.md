@@ -1,5 +1,9 @@
 # Zmiany
 
+## 1.0.3
+
+- Dopasowane kolorystycznie tła ikon aplikacji i spójne zasoby graficzne.
+
 ## 1.0.1
 
 - Nowa strona aplikacji z opisem funkcji.
