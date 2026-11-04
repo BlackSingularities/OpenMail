@@ -146,7 +146,7 @@ fun SettingsScreen() {
         }
 
         Group("Aktualizacje") {
-            SwitchRow(Icons.Rounded.SystemUpdate, "Sprawdzaj automatycznie", "Przy uruchomieniu aplikacji (GitHub Releases)", Prefs.autoUpdate) { Prefs.autoUpdate = it }
+            SwitchRow(Icons.Rounded.SystemUpdate, "Sprawdzaj automatycznie", "Przy uruchomieniu aplikacji", Prefs.autoUpdate) { Prefs.autoUpdate = it }
             val u = UpdateManager.state
             ActionRow(
                 Icons.Rounded.SystemUpdate,

@@ -661,7 +661,6 @@ fun UpdateBanner() {
             is UpdateState.Installing -> "Instalowanie ${u.info.version}…" to null
             else -> "" to null
         }
-        val notes = (u as? UpdateState.Available)?.info?.notes
         Column(
             Modifier
                 .fillMaxWidth()
@@ -693,9 +692,6 @@ fun UpdateBanner() {
                     trackColor = Color.White.copy(alpha = 0.12f),
                     modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
                 )
-            }
-            if (!notes.isNullOrBlank()) {
-                Text(notes, color = Palette.TextDim, fontSize = 12.sp, lineHeight = 16.sp, maxLines = 5, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 8.dp, start = 34.dp))
             }
         }
     }
