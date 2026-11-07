@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
+import androidx.compose.material.icons.rounded.BugReport
 import androidx.compose.material.icons.automirrored.rounded.Notes
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.automirrored.rounded.ViewList
@@ -169,6 +170,9 @@ fun SettingsScreen() {
             }
             ActionRow(Icons.Rounded.Email, "Kontakt", "kontakt@redzikowski.com") {
                 runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("mailto:kontakt@redzikowski.com"))) }
+            }
+            com.blacksingularities.openmail.feedback.FeedbackEntry { open ->
+                ActionRow(Icons.Rounded.BugReport, com.blacksingularities.openmail.feedback.FeedbackText.entryTitle, com.blacksingularities.openmail.feedback.FeedbackText.entrySubtitle) { open() }
             }
             ActionRow(Icons.Rounded.LocalCafe, "Postaw kawę", "Wesprzyj rozwój na buycoffee.to") {
                 runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://buycoffee.to/adamredzikowski"))) }

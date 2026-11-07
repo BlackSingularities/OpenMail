@@ -1,5 +1,7 @@
 package com.blacksingularities.openmail
 
+import com.blacksingularities.openmail.feedback.Feedback
+import com.blacksingularities.openmail.feedback.CrashReportPrompt
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -46,6 +48,7 @@ import com.blacksingularities.openmail.update.UpdateManager
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Feedback.install(this, "openmail")
         enableEdgeToEdge()
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
         if (savedInstanceState == null) {
@@ -56,6 +59,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             OpenMailTheme {
+                CrashReportPrompt()
                 // Cofnięta albo nieudana wysyłka – edytor otwiera się ponownie.
                 val restored = Outbox.restored
                 LaunchedEffect(restored) {
