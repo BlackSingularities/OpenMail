@@ -1,0 +1,22 @@
+{
+  "slug": "openmail",
+  "name": "OpenMail",
+  "label": "wszystkie skrzynki pocztowe w jednej aplikacji",
+  "icon": "icon.png",
+  "url": "https://redzikowski.com/portfolio/openmail",
+  "posters": [
+    {
+      "platform": "android",
+      "file": "android.png",
+      "title": "Cała poczta *w jednym miejscu*",
+      "lead": "Gmail, Outlook, iCloud, WP, Onet, Interia i każdy serwer IMAP – we wspólnej skrzynce, z wątkami i cofaniem wysyłki.",
+      "shots": [
+        { "src": "../screenshots/android/01-odebrane.png", "caption": "Odebrane" },
+        { "src": "../screenshots/android/02-wiadomosc.png", "caption": "Wiadomość" },
+        { "src": "../screenshots/android/03-pisanie.png", "caption": "Pisanie" }
+      ],
+      "features": ["dowolna liczba kont", "logowanie Google i Microsoft", "wspólna skrzynka", "cofanie wysyłki", "kolejka offline", "hasła w Android Keystore"],
+      "meta": "Android 10 lub nowszy"
+    }
+  ]
+}

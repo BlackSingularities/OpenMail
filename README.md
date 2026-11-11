@@ -4,6 +4,14 @@
 
 # OpenMail
 
+<!-- posters:start -->
+<p align="center">
+  <img src="docs/posters/android.png" alt="OpenMail – Android" width="460">
+</p>
+
+<p align="center"><a href="https://redzikowski.com/portfolio/openmail">redzikowski.com/portfolio/openmail</a></p>
+<!-- posters:end -->
+
 Otwarty, rozbudowany klient poczty na Androida – wiele kont w jednej aplikacji, czarny interfejs AMOLED, bez reklam i śledzenia.
 
 ## Funkcje
